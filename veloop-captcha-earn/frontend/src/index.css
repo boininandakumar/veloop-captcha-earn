@@ -1,0 +1,32 @@
+:root {
+  --veloop-bg: #05060d;
+  --veloop-bg-2: #0b0e1c;
+  --veloop-panel: rgba(18, 22, 41, 0.72);
+  --veloop-border: rgba(120, 140, 255, 0.16);
+  --veloop-blue: #4f8cff;
+  --veloop-blue-2: #7fb3ff;
+  --veloop-gold: #f6c453;
+  --veloop-purple: #8b6bff;
+  --veloop-green: #34e0a1;
+  --veloop-red: #ff5d7a;
+  --veloop-text: #eef1ff;
+  --veloop-text-dim: #9aa3c7;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: radial-gradient(ellipse at top, #0e1330 0%, #05060d 55%, #020207 100%);
+  color: var(--veloop-text);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; }
+
+a { color: inherit; }

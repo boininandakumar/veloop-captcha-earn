@@ -1,0 +1,161 @@
+{
+  "info": {
+    "name": "VELoop Captcha Earn",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "token", "value": "" },
+    { "key": "challengeId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Login (demo user)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data.token) pm.collectionVariables.set('token', data.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"demo@veloop.test\",\n  \"password\": \"Demo@12345\"\n}"
+        }
+      }
+    },
+    {
+      "name": "2. Get current challenge",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data.challenge) pm.collectionVariables.set('challengeId', data.challenge.challengeId);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/captcha/current"
+      }
+    },
+    {
+      "name": "3. Verify (correct or wrong - inspect captchaText/options manually)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"selectedOption\": \"PASTE_ONE_OF_THE_4_OPTIONS_HERE\"\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Claim reward",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/captcha/claim",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "5. Duplicate claim (negative test - expect 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/captcha/claim",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "6. Duplicate verify (negative test - expect 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"selectedOption\": \"ANYTHING\"\n}"
+        }
+      }
+    },
+    {
+      "name": "7. Get new challenge (No Thanks flow)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/captcha/new"
+      }
+    },
+    {
+      "name": "8. Fake reward / fake isCorrect (negative test - expect real config values only)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": "{{baseUrl}}/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"selectedOption\": \"ANYTHING\",\n  \"isCorrect\": true,\n  \"reward\": 100000\n}"
+        }
+      }
+    },
+    {
+      "name": "9. Get Gem balance",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/wallet/gems"
+      }
+    },
+    {
+      "name": "10. Get CAPTCHA history",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/captcha/history"
+      }
+    },
+    {
+      "name": "11. Unauthorized request (negative test - expect 401)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/captcha/current"
+      }
+    }
+  ]
+}
