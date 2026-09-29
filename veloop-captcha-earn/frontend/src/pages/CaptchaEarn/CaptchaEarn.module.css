@@ -1,344 +1,461 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap");
+
 .page {
   min-height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 20px 16px 60px;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(14, 165, 233, 0.16), transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(139, 92, 246, 0.14), transparent 50%),
+    #060b18;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #f1f5ff;
 }
 
-.topBar {
+.card {
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
+  background: linear-gradient(180deg, #0e1830 0%, #0b1426 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 28px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(14, 165, 233, 0.04) inset;
+  overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 4px 18px;
+  padding: 20px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--veloop-text-dim);
+  font-family: "Sora", sans-serif;
   font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.01em;
 }
 
-.logoDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--veloop-blue), var(--veloop-purple));
-  box-shadow: 0 0 10px var(--veloop-blue);
+.brandMark {
+  color: #38BDF8;
+  font-size: 16px;
 }
 
-.balancePill {
+.balanceChip {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(246, 196, 83, 0.1);
-  border: 1px solid rgba(246, 196, 83, 0.35);
-  color: var(--veloop-gold);
+  font-family: "Sora", sans-serif;
   font-weight: 700;
-  font-size: 13px;
-  padding: 6px 12px;
+  font-size: 14px;
+  padding: 7px 14px;
   border-radius: 999px;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  color: #cfe0ff;
 }
 
-.gemDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-  transform: rotate(45deg);
-  background: linear-gradient(135deg, var(--veloop-gold), #ffe1a0);
-  display: inline-block;
+.gemIcon {
+  color: #38BDF8;
+  font-size: 12px;
 }
 
-.phone {
-  width: 100%;
-  max-width: 420px;
-  background: var(--veloop-panel);
-  border: 1px solid var(--veloop-border);
-  border-radius: 28px;
-  padding: 22px;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+/* ---------- Body ---------- */
+.body {
+  padding: 26px 22px 28px;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
 }
 
-.loadingText {
-  text-align: center;
-  color: var(--veloop-text-dim);
-  padding: 60px 0;
+/* ---------- Loading ---------- */
+.loadingState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #8b96b8;
+  font-size: 14px;
 }
 
-/* --- Reward info card --- */
-.rewardCard {
-  border: 1px solid var(--veloop-border);
-  border-radius: 18px;
-  padding: 16px 18px;
-  margin-bottom: 16px;
-  background: linear-gradient(135deg, rgba(79,140,255,0.08), rgba(139,107,255,0.06));
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(56, 189, 248, 0.18);
+  border-top-color: #38BDF8;
+  animation: spin 0.8s linear infinite;
 }
-.rewardCardHeader {
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Earn banner ---------- */
+.earnBanner {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(120deg, rgba(14, 165, 233, 0.14), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 22px;
+}
+
+.earnTitle {
+  font-family: "Sora", sans-serif;
   font-weight: 700;
   font-size: 15px;
+  margin: 0 0 2px;
 }
-.rewardCardSub {
-  color: var(--veloop-text-dim);
-  font-size: 12.5px;
-  margin: 6px 0 12px;
-}
-.rewardCardStats {
-  display: flex;
-  gap: 18px;
-}
-.rewardCardStats > div { display: flex; flex-direction: column; }
-.statLabel { font-size: 10.5px; color: var(--veloop-text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
-.statValue { font-size: 18px; font-weight: 700; color: var(--veloop-gold); }
-.statValueSmall { font-size: 13px; font-weight: 600; color: var(--veloop-blue-2); }
 
-/* --- Challenge card --- */
-.challengeCard {
-  border: 1px solid var(--veloop-border);
-  border-radius: 20px;
-  padding: 20px;
-  background: rgba(6, 9, 22, 0.55);
+.earnSubtitle {
+  font-size: 12.5px;
+  color: #93a1c4;
+  margin: 0;
+  line-height: 1.4;
 }
-.challengeHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+.rewardPill {
+  flex-shrink: 0;
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
   font-size: 13px;
-  color: var(--veloop-text-dim);
-  margin-bottom: 14px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+  color: #04101f;
+  white-space: nowrap;
 }
-.newCodeBtn {
-  background: none;
-  border: none;
-  color: var(--veloop-blue-2);
-  font-size: 12.5px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.newCodeBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.captchaTextWrap {
+/* ---------- Question ---------- */
+.instruction {
+  text-align: center;
+  font-size: 13px;
+  color: #8b96b8;
+  margin: 0 0 10px;
+}
+
+.question {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin: 6px 0 22px;
-}
-.captchaChar {
-  font-family: "Courier New", monospace;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  background: linear-gradient(135deg, var(--veloop-blue-2), var(--veloop-purple));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 22px rgba(79,140,255,0.35);
+  gap: 4px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
 }
 
+.questionChar {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: clamp(22px, 7vw, 30px);
+  letter-spacing: 0.02em;
+  width: 1.1em;
+  text-align: center;
+  color: #eaf1ff;
+  text-shadow: 0 0 18px rgba(56, 189, 248, 0.35);
+}
+
+/* ---------- Option grid ---------- */
 .optionsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-bottom: 18px;
 }
 
 .optionCard {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 14px;
-  border-radius: 14px;
-  border: 1px solid var(--veloop-border);
-  background: rgba(255,255,255,0.02);
-  color: var(--veloop-text);
-  font-family: "Courier New", monospace;
-  font-size: 16px;
+  font-family: "Sora", sans-serif;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  font-size: clamp(15px, 4.2vw, 18px);
+  letter-spacing: 0.02em;
+  padding: 16px 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.03);
+  color: #dce6ff;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
-.optionCard:hover:not(:disabled) {
+
+.optionCard:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(14, 165, 233, 0.08);
   transform: translateY(-2px);
-  border-color: var(--veloop-blue);
-  box-shadow: 0 8px 24px rgba(79,140,255,0.18);
-}
-.optionCard:active:not(:disabled) { transform: translateY(0); }
-.optionCard:focus-visible { outline: 2px solid var(--veloop-blue-2); outline-offset: 2px; }
-
-.optionSelected {
-  border-color: var(--veloop-blue);
-  background: linear-gradient(135deg, rgba(79,140,255,0.22), rgba(139,107,255,0.14));
-  box-shadow: 0 0 0 1px var(--veloop-blue), 0 10px 30px rgba(79,140,255,0.25);
-}
-.optionDimmed { opacity: 0.4; cursor: not-allowed; }
-
-.optionIndex {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-  color: var(--veloop-text-dim);
-  font-size: 11px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: inherit;
-}
-.optionText { flex: 1; }
-.optionCheck { color: var(--veloop-green); font-size: 16px; }
-
-.helperNote {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11.5px;
-  color: var(--veloop-text-dim);
-  margin-top: 18px;
-}
-.eyeIcon { opacity: 0.7; }
-
-/* --- Checking state --- */
-.checkingWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 46px 10px 30px;
-  text-align: center;
-}
-.checkingRing {
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  border: 2px solid rgba(139,107,255,0.25);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 22px;
-  position: relative;
-  animation: spin 2.2s linear infinite;
-}
-.checkingRing::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  border-top-color: var(--veloop-purple);
-  border-right-color: var(--veloop-blue);
-}
-.checkingCore {
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(139,107,255,0.5), transparent 70%);
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.checkingTitle { margin: 0 0 6px; font-size: 18px; }
-.checkingSub { color: var(--veloop-text-dim); font-size: 13px; margin: 0 0 18px; }
-.checkingNote { color: var(--veloop-text-dim); font-size: 11px; opacity: 0.7; }
-
-/* --- Result state --- */
-.resultWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 10px 10px;
-  text-align: center;
-}
-.resultIconRing {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 18px;
-}
-.resultSuccess .resultIconRing {
-  background: radial-gradient(circle, rgba(52,224,161,0.25), transparent 70%);
-  box-shadow: 0 0 40px rgba(52,224,161,0.35);
-}
-.resultFail .resultIconRing {
-  background: radial-gradient(circle, rgba(255,93,122,0.25), transparent 70%);
-  box-shadow: 0 0 40px rgba(255,93,122,0.35);
-}
-.resultIcon { font-size: 40px; }
-.resultSuccess .resultIcon { color: var(--veloop-green); }
-.resultFail .resultIcon { color: var(--veloop-red); }
-
-.resultTitle { margin: 0 0 6px; font-size: 19px; }
-.resultSub { color: var(--veloop-text-dim); font-size: 13px; margin: 0 0 16px; max-width: 300px; }
-
-.resultReward {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 20px; font-weight: 800; color: var(--veloop-gold);
-  margin-bottom: 20px;
 }
 
-.claimRow {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-}
-.claimBtn {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  border: none;
-  background: linear-gradient(135deg, var(--veloop-green), #1fbf8a);
-  color: #06120d;
-  font-weight: 700;
-  cursor: pointer;
-}
-.claimBtn:disabled { opacity: 0.6; cursor: not-allowed; }
-.noThanksBtn, .tryAgainBtn {
-  flex: 1;
-  padding: 13px;
-  border-radius: 12px;
-  border: 1px solid var(--veloop-border);
-  background: rgba(255,255,255,0.03);
-  color: var(--veloop-text);
-  font-weight: 600;
-  cursor: pointer;
-}
-.tryAgainBtn {
-  background: linear-gradient(135deg, var(--veloop-red), #c93b58);
-  border: none;
-  color: white;
+.optionCard:active {
+  transform: translateY(0) scale(0.97);
+  background: rgba(14, 165, 233, 0.16);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
 }
 
-.balanceMove {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 15px; font-weight: 700;
-  color: var(--veloop-text-dim);
-}
-.newBalance { color: var(--veloop-green); font-size: 17px; }
-
-.continueBtn {
-  margin-top: 16px;
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid var(--veloop-border);
-  background: rgba(79,140,255,0.1);
-  color: var(--veloop-blue-2);
-  font-weight: 600;
-  cursor: pointer;
+.optionCard:focus-visible {
+  outline: 2px solid #38BDF8;
+  outline-offset: 2px;
 }
 
-.errorText {
-  color: var(--veloop-red);
-  font-size: 13px;
-  text-align: center;
-  margin-top: 14px;
-}
-
-.logoutLink {
-  margin-top: 22px;
+.refreshLink {
+  align-self: center;
   background: none;
   border: none;
-  color: var(--veloop-text-dim);
-  font-size: 12px;
+  color: #6f96e0;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
-  text-decoration: underline;
+  padding: 6px 10px;
+  margin-bottom: 14px;
+}
+
+.refreshLink:hover {
+  color: #9dbcf7;
+}
+
+.trustNote {
+  text-align: center;
+  font-size: 11.5px;
+  color: #5c6892;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---------- Checking state ---------- */
+.checkingState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.scanRing {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 3px solid rgba(56, 189, 248, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.scanRing::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #38BDF8;
+  border-right-color: #38BDF8;
+  animation: spin 0.9s linear infinite;
+}
+
+.scanCore {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38BDF8, #0EA5E9 70%);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.65);
+  animation: pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.85; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.checkingTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0;
+}
+
+.checkingSubtitle {
+  font-size: 12.5px;
+  color: #8b96b8;
+  margin: 0;
+}
+
+/* ---------- Result state ---------- */
+.resultState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.resultIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.resultIcon.success {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.22), transparent 70%);
+  border: 1.5px solid #22c55e;
+  color: #4ade80;
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.35);
+}
+
+.resultIcon.warn {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.2), transparent 70%);
+  border: 1.5px solid #f59e0b;
+  color: #fbbf24;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+}
+
+.resultIcon.error {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.2), transparent 70%);
+  border: 1.5px solid #f43f5e;
+  color: #fb7185;
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.3);
+}
+
+.resultTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+.resultSubtitle {
+  font-size: 13px;
+  color: #8b96b8;
+  margin: 4px 0 14px;
+  max-width: 260px;
+}
+
+.rewardBig {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  color: #eaf1ff;
+  margin-bottom: 22px;
+}
+
+.rewardBig .gemIcon {
+  font-size: 20px;
+  color: #38BDF8;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+}
+
+.actionRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 260px;
+}
+
+.claimButton {
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+  color: #04101f;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+}
+
+.claimButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.45);
+}
+
+.claimButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.laterButton {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #93a1c4;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.laterButton:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #dce6ff;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 380px) {
+  .card {
+    border-radius: 20px;
+  }
+  .body {
+    padding: 20px 16px 24px;
+  }
+  .optionCard {
+    padding: 14px 6px;
+  }
+}
+
+@media (min-width: 640px) {
+  .card {
+    max-width: 440px;
+  }
+  .body {
+    padding: 32px 30px 34px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    padding: 40px;
+  }
+  .card {
+    max-width: 460px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .scanRing::before,
+  .scanCore {
+    animation: none;
+  }
 }
