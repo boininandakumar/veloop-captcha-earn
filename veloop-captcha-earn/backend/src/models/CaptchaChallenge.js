@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { renderCaptchaSvg } = require("../utils/generateCaptcha");
 
 const STATUS = ["ACTIVE", "COMPLETED", "EXPIRED", "DISCARDED"];
 const RESULT = ["CORRECT", "WRONG", null];
@@ -16,7 +17,7 @@ const captchaChallengeSchema = new mongoose.Schema(
 
     status: { type: String, enum: STATUS, default: "ACTIVE", index: true },
     selectedOption: { type: String, default: null },
-    result: { type: String, enum: REWARD_STATUS ? RESULT : RESULT, default: null },
+    result: { type: String, enum: RESULT, default: null },
 
     rewardAmountMilliGems: { type: Number, default: 0 },
     rewardStatus: { type: String, enum: REWARD_STATUS, default: "NONE" },
@@ -28,20 +29,17 @@ const captchaChallengeSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// A user should not be able to have unlimited dangling ACTIVE challenges;
-// helps "GET /current" reuse logic and is good practice, not a hard lock.
 captchaChallengeSchema.index({ userId: 1, status: 1 });
 
 /**
- * Strips server-only-authoritative fields before anything is sent to the
- * client. correctOption is already `select: false` at the schema level
- * (defense in depth #1); this is defense in depth #2 for any place a
- * document might get serialized directly.
+ * Strips server-only fields before anything is sent to the client.
+ * The plain captchaText is NOT sent anymore - only a distorted image
+ * (captchaImage), so a script cannot just read the answer from the API.
  */
 captchaChallengeSchema.methods.toSafeJSON = function () {
   return {
     challengeId: this.challengeId,
-    captchaText: this.captchaText,
+    captchaImage: renderCaptchaSvg(this.captchaText, this.challengeId),
     options: this.options,
     status: this.status,
     result: this.result,

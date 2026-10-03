@@ -11,10 +11,13 @@ export default function CaptchaChallenge({ challenge, selected, locked, onSelect
         </button>
       </div>
 
-      <div className={styles.captchaTextWrap}>
-        {challenge.captchaText.split("").map((ch, i) => (
-          <span key={i} className={styles.captchaChar}>{ch}</span>
-        ))}
+      <div className={styles.captchaImageWrap}>
+        <img
+          className={styles.captchaImage}
+          src={challenge.captchaImage}
+          alt="CAPTCHA code"
+          draggable={false}
+        />
       </div>
 
       <div className={styles.optionsGrid}>
@@ -31,7 +34,7 @@ export default function CaptchaChallenge({ challenge, selected, locked, onSelect
       </div>
 
       <p className={styles.helperNote}>
-        <span className={styles.eyeIcon}>◎</span> This helps protect your account from automated access.
+        <span className={styles.eyeIcon}>◎</span> Look closely: the options are very similar.
       </p>
     </div>
   );

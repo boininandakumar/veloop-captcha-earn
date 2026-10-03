@@ -1,78 +1,107 @@
-import { useEffect, useState, useCallback } from "react";
-import { captchaApi, walletApi } from "../../services/api";
+import { useCallback, useEffect, useState } from "react";
+import { captchaApi, walletApi } from "../../services/api.js";
+import { useAuth } from "../../context/AuthContext.jsx";
+import CaptchaChallenge from "../../components/CaptchaChallenge.jsx";
+import CheckingState from "../../components/CheckingState.jsx";
+import ResultCard from "../../components/ResultCard.jsx";
+import RewardCard from "../../components/RewardCard.jsx";
 import styles from "./CaptchaEarn.module.css";
 
-const PHASES = {
-  LOADING: "loading",
-  IDLE: "idle",
-  CHECKING: "checking",
-  RESULT: "result",
-};
+// Always returns a real number, so .toFixed() can never crash the page.
+function toNum(value, fallback = 0) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
 
+// Phases: loading -> challenge -> checking -> result -> (claim or forfeit) -> challenge
 export default function CaptchaEarn() {
-  const [phase, setPhase] = useState(PHASES.LOADING);
+  const { user, logout } = useAuth();
+  const [phase, setPhase] = useState("loading");
   const [challenge, setChallenge] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [result, setResult] = useState(null);
-  const [balance, setBalance] = useState(null);
-  const [error, setError] = useState(null);
   const [claiming, setClaiming] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [prevBalance, setPrevBalance] = useState(0);
+  const [config, setConfig] = useState({ correctReward: 1, wrongReward: 0.5 });
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const refreshBalance = useCallback(async () => {
+    const res = await walletApi.getGems();
+    const value = toNum(res.data?.balance);
+    setBalance(value);
+    return value;
+  }, []);
+
+  const handleApiError = useCallback(
+    (err, fallback) => {
+      if (err.response?.status === 401) {
+        logout();
+        return;
+      }
+      setErrorMsg(err.response?.data?.message || fallback);
+    },
+    [logout]
+  );
 
   const loadChallenge = useCallback(async () => {
-    setPhase(PHASES.LOADING);
+    setPhase("loading");
+    setSelected(null);
     setResult(null);
-    setError(null);
+    setClaimed(false);
+    setErrorMsg("");
     try {
-      const { data } = await captchaApi.getCurrent();
-      setChallenge(data.challenge);
-      setPhase(PHASES.IDLE);
+      const [challengeRes] = await Promise.all([captchaApi.getCurrent(), refreshBalance()]);
+      setChallenge(challengeRes.data.challenge);
+      setPhase("challenge");
     } catch (err) {
-      setError("Couldn't load a challenge. Please try again.");
-      setPhase(PHASES.IDLE);
+      handleApiError(err, "Could not load the challenge. Please check that the backend is running.");
+      setPhase("error");
     }
-  }, []);
-
-  const loadBalance = useCallback(async () => {
-    try {
-      const { data } = await walletApi.getGems();
-      setBalance(data.gemBalance);
-    } catch {
-      /* non-fatal, balance chip just shows a dash */
-    }
-  }, []);
+  }, [refreshBalance, handleApiError]);
 
   useEffect(() => {
+    captchaApi
+      .config()
+      .then((res) =>
+        setConfig({
+          correctReward: toNum(res.data.correctReward, 1),
+          wrongReward: toNum(res.data.wrongReward, 0.5),
+        })
+      )
+      .catch(() => {});
     loadChallenge();
-    loadBalance();
-  }, [loadChallenge, loadBalance]);
+  }, [loadChallenge]);
 
-  async function handleSelect(option) {
-    if (phase !== PHASES.IDLE) return;
-    setPhase(PHASES.CHECKING);
+  async function handleSelect(value) {
+    if (phase !== "challenge") return;
+    setSelected(value);
+    setPhase("checking");
 
-    const minAnimation = new Promise((res) => setTimeout(res, 550));
+    const verifyPromise = captchaApi.verify(challenge.challengeId, value);
+    const minAnimation = new Promise((r) => setTimeout(r, 500));
+
     try {
-      const [{ data }] = await Promise.all([
-        captchaApi.verify(challenge.challengeId, option),
-        minAnimation,
-      ]);
-      setResult(data);
-      setPhase(PHASES.RESULT);
+      const [res] = await Promise.all([verifyPromise, minAnimation]);
+      setResult(res.data);
+      setPhase("result");
     } catch (err) {
-      await minAnimation;
-      setError(err?.response?.data?.message || "Verification failed. Please try again.");
-      setResult({ result: "ERROR" });
-      setPhase(PHASES.RESULT);
+      handleApiError(err, "Verification failed. Please try again.");
+      setPhase("challenge");
+      setSelected(null);
     }
   }
 
   async function handleClaim() {
     setClaiming(true);
     try {
-      const { data } = await captchaApi.claim(challenge.challengeId);
-      setBalance(data.wallet.newBalance);
-      setTimeout(() => loadChallenge(), 900);
+      const res = await captchaApi.claim(challenge.challengeId);
+      setPrevBalance(balance);
+      setBalance(toNum(res.data.balance, balance));
+      setClaimed(true);
     } catch (err) {
-      setError(err?.response?.data?.message || "Claim failed.");
+      handleApiError(err, "Claim failed.");
     } finally {
       setClaiming(false);
     }
@@ -81,147 +110,95 @@ export default function CaptchaEarn() {
   async function handleNoThanks() {
     try {
       await captchaApi.noThanks(challenge.challengeId);
-    } catch {
-      /* moving to a new challenge regardless */
+    } catch (_) {
+      // even if forfeit fails, still move on to a new challenge
     }
     loadChallenge();
   }
 
+  async function handleNewCode() {
+    try {
+      const res = await captchaApi.requestNew();
+      setChallenge(res.data.challenge);
+      setSelected(null);
+      setResult(null);
+      setErrorMsg("");
+      setPhase("challenge");
+    } catch (err) {
+      handleApiError(err, "Could not get a new code.");
+    }
+  }
+
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <header className={styles.header}>
-          <div className={styles.brand}>
-            <span className={styles.brandMark}>&#9670;</span>
-            <span>VELoop Rewards</span>
-          </div>
-          <div className={styles.balanceChip}>
-            <span className={styles.gemIcon}>&#9670;</span>
-            {balance === null ? "—" : balance.toFixed(2)}
-          </div>
-        </header>
-
-        <div className={styles.body}>
-          {phase === PHASES.LOADING && (
-            <div className={styles.loadingState}>
-              <div className={styles.spinner} />
-              <p>Preparing your challenge…</p>
-            </div>
-          )}
-
-          {phase === PHASES.IDLE && challenge && (
-            <>
-              <div className={styles.earnBanner}>
-                <div>
-                  <p className={styles.earnTitle}>Earn Gems</p>
-                  <p className={styles.earnSubtitle}>
-                    Complete a quick security check to earn rewards.
-                  </p>
-                </div>
-                <div className={styles.rewardPill}>+1 Gem</div>
-              </div>
-
-              <p className={styles.instruction}>Select the matching code</p>
-              <div className={styles.question}>
-                {challenge.question.split("").map((ch, i) => (
-                  <span key={i} className={styles.questionChar}>{ch}</span>
-                ))}
-              </div>
-
-              <div className={styles.optionsGrid}>
-                {challenge.options.map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    className={styles.optionCard}
-                    onClick={() => handleSelect(opt)}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-
-              <button type="button" className={styles.refreshLink} onClick={loadChallenge}>
-                &#8635; New code
-              </button>
-
-              <p className={styles.trustNote}>
-                This helps protect your account from automated access.
-              </p>
-            </>
-          )}
-
-          {phase === PHASES.CHECKING && (
-            <div className={styles.checkingState}>
-              <div className={styles.scanRing}>
-                <div className={styles.scanCore} />
-              </div>
-              <p className={styles.checkingTitle}>Verifying…</p>
-              <p className={styles.checkingSubtitle}>
-                Please wait while we check your answer.
-              </p>
-            </div>
-          )}
-
-          {phase === PHASES.RESULT && result && (
-            <div className={styles.resultState}>
-              {result.result === "CORRECT" && (
-                <>
-                  <div className={`${styles.resultIcon} ${styles.success}`}>&#10003;</div>
-                  <p className={styles.resultTitle}>Verification Complete!</p>
-                  <p className={styles.resultSubtitle}>You earned</p>
-                  <div className={styles.rewardBig}>
-                    <span className={styles.gemIcon}>&#9670;</span>
-                    +{result.reward.amount} Gem
-                  </div>
-                </>
-              )}
-              {result.result === "WRONG" && (
-                <>
-                  <div className={`${styles.resultIcon} ${styles.warn}`}>&#8212;</div>
-                  <p className={styles.resultTitle}>Not Quite Right</p>
-                  <p className={styles.resultSubtitle}>
-                    That code didn't match, but you still earned
-                  </p>
-                  <div className={styles.rewardBig}>
-                    <span className={styles.gemIcon}>&#9670;</span>
-                    +{result.reward.amount} Gem
-                  </div>
-                </>
-              )}
-              {result.result === "ERROR" && (
-                <>
-                  <div className={`${styles.resultIcon} ${styles.error}`}>&#10005;</div>
-                  <p className={styles.resultTitle}>Verification Unsuccessful</p>
-                  <p className={styles.resultSubtitle}>{error}</p>
-                </>
-              )}
-
-              {result.result !== "ERROR" ? (
-                <div className={styles.actionRow}>
-                  <button
-                    type="button"
-                    className={styles.claimButton}
-                    onClick={handleClaim}
-                    disabled={claiming}
-                  >
-                    {claiming ? "Adding…" : "Add to Balance"}
-                  </button>
-                  <button type="button" className={styles.laterButton} onClick={handleNoThanks}>
-                    Maybe Later
-                  </button>
-                </div>
-              ) : (
-                <div className={styles.actionRow}>
-                  <button type="button" className={styles.claimButton} onClick={loadChallenge}>
-                    Try Again
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+      <div className={styles.topBar}>
+        <div className={styles.brand}>
+          <span className={styles.logoDot} />
+          VELOOP REWARDS
+        </div>
+        <div className={styles.balancePill}>
+          <span className={styles.gemDot} />
+          {balance.toFixed(2)}
         </div>
       </div>
+
+      <div className={styles.phone}>
+        {phase === "loading" && <p className={styles.loadingText}>Loading challenge…</p>}
+
+        {phase === "error" && (
+          <div className={styles.resultWrap}>
+            <p className={styles.errorText}>{errorMsg}</p>
+            <button className={styles.continueBtn} onClick={loadChallenge}>
+              Try again
+            </button>
+          </div>
+        )}
+
+        {phase === "challenge" && challenge && (
+          <>
+            <RewardCard
+              balance={balance}
+              correctReward={config.correctReward}
+              wrongReward={config.wrongReward}
+            />
+            <CaptchaChallenge
+              challenge={challenge}
+              selected={selected}
+              locked={false}
+              onSelect={handleSelect}
+              onNewCode={handleNewCode}
+            />
+          </>
+        )}
+
+        {phase === "checking" && <CheckingState />}
+
+        {phase === "result" && result && (
+          <ResultCard
+            result={result.result}
+            reward={toNum(result.reward?.amount)}
+            prevBalance={prevBalance}
+            newBalance={balance}
+            claimed={claimed}
+            claiming={claiming}
+            onClaim={handleClaim}
+            onNoThanks={handleNoThanks}
+            onTryAgain={handleNoThanks}
+          />
+        )}
+
+        {claimed && phase === "result" && (
+          <button className={styles.continueBtn} onClick={handleNewCode}>
+            Continue Earning →
+          </button>
+        )}
+
+        {phase !== "error" && errorMsg && <p className={styles.errorText}>{errorMsg}</p>}
+      </div>
+
+      <button className={styles.logoutLink} onClick={logout}>
+        Sign out {user ? `(${user.email})` : ""}
+      </button>
     </div>
   );
 }
