@@ -41,7 +41,7 @@ Response:
   "success": true,
   "challenge": {
     "challengeId": "CAP-92831",
-    "captchaText": "A7K2P9",
+    "captchaImage": "data:image/svg+xml;utf8,<distorted image>",
     "options": ["A7K2P9", "AJK29P", "A7L9P2", "X4M8Q1"],
     "status": "ACTIVE",
     "result": null,
