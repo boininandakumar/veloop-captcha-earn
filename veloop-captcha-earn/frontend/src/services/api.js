@@ -5,7 +5,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("veloop_token"); // JWT only - never gems/balance
+  const token = sessionStorage.getItem("veloop_token"); // JWT only - never gems/balance
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });

@@ -4,7 +4,7 @@ import { authApi } from "../services/api";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem("veloop_token"));
+  const [token, setToken] = useState(() => sessionStorage.getItem("veloop_token"));
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,20 +18,20 @@ export function AuthProvider({ children }) {
       .then((res) => setUser(res.data.user))
       .catch(() => {
         setToken(null);
-        localStorage.removeItem("veloop_token");
+        sessionStorage.removeItem("veloop_token");
       })
       .finally(() => setLoading(false));
   }, [token]);
 
   const login = useCallback(async (email, password) => {
     const res = await authApi.login(email, password);
-    localStorage.setItem("veloop_token", res.data.token);
+    sessionStorage.setItem("veloop_token", res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem("veloop_token");
+    sessionStorage.removeItem("veloop_token");
     setToken(null);
     setUser(null);
   }, []);

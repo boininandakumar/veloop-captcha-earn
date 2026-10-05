@@ -22,7 +22,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/captcha-earn" replace />} />
+     <Route path="*" element={<Navigate to="/login" replace />} /> 
     </Routes>
   );
 }
