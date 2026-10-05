@@ -73,3 +73,24 @@ For the submission, capture a screenshot (or terminal output) of each
 numbered case's response, plus one MongoDB Compass screenshot each of:
 `captchachallenges`, `gemtransactions`, and `wallets` after a full
 correct → claim cycle.
+
+---
+
+# Test Results (Postman, run on 2026-10-05)
+
+| # | Test | Request | Result | Screenshot |
+|---|------|---------|--------|------------|
+| 1 | Login | POST /api/auth/login | 200 OK, JWT token returned | ![](screenshots/01-login.png) |
+| 2 | Get challenge | GET /api/captcha/current | 200 OK, 4 options and `captchaImage`, no `correctOption` | ![](screenshots/02-get-challenge.png) |
+| 3 | Wrong answer | POST /api/captcha/verify | 200 OK, `result: WRONG`, reward 0.5 | ![](screenshots/03-wrong-answer.png) |
+| 4 | Claim | POST /api/captcha/claim | 200 OK, `claimed: true`, balance 106 → 106.5 | ![](screenshots/04-claim.png) |
+| 5 | Duplicate claim | POST /api/captcha/claim | 409 `CLAIM_ALREADY_PROCESSED` | ![](screenshots/05-duplicate-claim.png) |
+| 6 | Duplicate verify | POST /api/captcha/verify | 409 `CHALLENGE_ALREADY_COMPLETED` | ![](screenshots/06-duplicate-verify.png) |
+| 7 | Expired challenge | POST /api/captcha/verify | 410 `CHALLENGE_EXPIRED` | ![](screenshots/07-expired.png) |
+| 8 | Option not in challenge | POST /api/captcha/verify | 400 `INVALID_OPTION` | ![](screenshots/08-invalid-option.png) |
+| 9 | Fake reward / fake isCorrect | POST /api/captcha/verify | 200 OK, reward is only the real 0.5 (fake 100000 ignored) | ![](screenshots/09-fake-reward.png) |
+| 10 | Gem balance | GET /api/wallet/gems | 200 OK, balance 106.5 | ![](screenshots/10-balance.png) |
+| 11 | History | GET /api/captcha/history | 200 OK, list of past challenges | ![](screenshots/11-history.png) |
+| 12 | Unauthorized | GET /api/captcha/current (no token) | 401 `NO_TOKEN` | ![](screenshots/12-unauthorized.png) |
+
+The correct-answer case (+1 Gem) was tested in the app UI (balance 105 → 106).
