@@ -1,120 +1,81 @@
 :root {
-  --veloop-bg: #eaf6ff;
-  --veloop-panel: #ffffff;
-  --veloop-border: rgba(14, 165, 233, 0.30);
-  --veloop-blue: #0ea5e9;
-  --veloop-blue-2: #0369a1;
-  --veloop-gold: #b45309;
+  --veloop-bg: #040814;
+  --veloop-panel: #0a1226;
+  --veloop-panel-2: #131c3d;
+  --veloop-border: rgba(140, 160, 255, 0.18);
+  --veloop-blue: #38bdf8;
+  --veloop-blue-2: #0ea5e9;
+  --veloop-gold: #fbbf24;
   --veloop-purple: #0284c7;
-  --veloop-green: #059669;
-  --veloop-red: #e11d48;
-  --veloop-text: #050a14;
-  --veloop-text-dim: #334155;
+  --veloop-green: #4ade80;
+  --veloop-red: #fb7185;
+  --veloop-text: #eef2ff;
+  --veloop-text-dim: #8b95b3;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 * { box-sizing: border-box; }
-
 html, body { min-height: 100%; margin: 0; }
 #root { min-height: 100vh; }
 
 body {
   background:
-    radial-gradient(ellipse at top left, #d4efff 0%, transparent 55%),
-    radial-gradient(ellipse at bottom right, #dcfce7 0%, transparent 50%),
-    linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+    radial-gradient(ellipse at top left, rgba(37, 99, 235, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.10) 0%, transparent 50%),
+    #040814;
   background-attachment: fixed;
   color: var(--veloop-text);
   -webkit-font-smoothing: antialiased;
 }
-
 button { font-family: inherit; }
-a { color: inherit; }
+::selection { background: rgba(56, 189, 248, 0.35); }
 
-/* ---------- LOGIN PAGE ---------- */
-.loginPage {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+/* ---------- LOGIN ---------- */
+.loginPage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
 .loginCard {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  background: var(--veloop-panel);
+  position: relative; width: 100%; max-width: 400px; overflow: hidden;
+  background: linear-gradient(180deg, #0a1226 0%, #060b1c 100%);
   border: 1px solid var(--veloop-border);
   border-radius: 24px;
   padding: 34px 28px 28px;
-  box-shadow: 0 24px 60px rgba(14, 165, 233, 0.18), 0 2px 6px rgba(14, 165, 233, 0.10);
-  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
 }
 .loginCard::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, #0ea5e9, #38bdf8, #4ade80);
 }
-
 .loginLogo {
-  width: 52px; height: 52px;
-  border-radius: 16px;
-  margin-bottom: 16px;
+  width: 52px; height: 52px; border-radius: 16px; margin-bottom: 16px;
   display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-  color: #fff;
-  font-size: 24px;
-  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.35);
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: #04121f; font-size: 24px;
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.45);
 }
-
-.loginTitle { margin: 0 0 4px; font-size: 26px; font-weight: 800; color: #000; }
+.loginTitle { margin: 0 0 4px; font-size: 26px; font-weight: 800; color: #fff; }
 .loginSub { margin: 0 0 24px; font-size: 14.5px; color: var(--veloop-text-dim); }
-
-.loginLabel { display: block; font-size: 13px; font-weight: 600; color: #000; }
+.loginLabel { display: block; font-size: 13px; font-weight: 600; color: #cbd5e1; }
 
 .loginInput {
-  width: 100%;
-  padding: 12px 14px;
-  margin: 6px 0 16px;
-  border-radius: 12px;
-  border: 1.5px solid rgba(14, 165, 233, 0.35);
-  background: #f8fcff;
-  color: #000;
-  font-size: 15px;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  width: 100%; padding: 12px 14px; margin: 6px 0 16px;
+  border-radius: 12px; border: 1.5px solid rgba(56, 189, 248, 0.25);
+  background: #070d20; color: #fff; font-size: 15px; outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.loginInput:focus {
-  border-color: #0ea5e9;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
-}
+.loginInput:focus { border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18); }
 
 .loginError { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--veloop-red); }
 
 .loginBtn {
-  width: 100%;
-  margin-top: 6px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  color: #fff;
-  font-size: 15.5px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.35);
+  width: 100%; margin-top: 6px; padding: 14px 16px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff;
+  font-size: 15.5px; font-weight: 700; letter-spacing: 0.02em; cursor: pointer;
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.40);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.loginBtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(14, 165, 233, 0.45); }
-.loginBtn:active:not(:disabled) { transform: translateY(0); }
-.loginBtn:disabled { opacity: 0.65; cursor: not-allowed; }
-
+.loginBtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(14, 165, 233, 0.55); }
+.loginBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 .loginHint { margin: 18px 0 0; font-size: 12px; color: var(--veloop-text-dim); line-height: 1.5; }
+.loginHint code { color: #7dd3fc; }
 
 @media (max-width: 380px) {
   .loginCard { padding: 28px 18px 22px; border-radius: 20px; }

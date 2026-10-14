@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { renderCaptchaSvg } = require("../utils/generateCaptcha");
 
 const STATUS = ["ACTIVE", "COMPLETED", "EXPIRED", "DISCARDED"];
 const RESULT = ["CORRECT", "WRONG", null];
@@ -33,13 +32,12 @@ captchaChallengeSchema.index({ userId: 1, status: 1 });
 
 /**
  * Strips server-only fields before anything is sent to the client.
- * The plain captchaText is NOT sent anymore - only a distorted image
- * (captchaImage), so a script cannot just read the answer from the API.
+ * correctOption is select:false at the schema level and is never returned here.
  */
 captchaChallengeSchema.methods.toSafeJSON = function () {
   return {
     challengeId: this.challengeId,
-    captchaImage: renderCaptchaSvg(this.captchaText, this.challengeId),
+    captchaText: this.captchaText,
     options: this.options,
     status: this.status,
     result: this.result,
