@@ -109,3 +109,13 @@
 .captchaChar { display: inline-block; transform: translateY(var(--y, 0px)) rotate(var(--rot, 0deg)) scale(var(--s, 1)); animation: charIn .5s ease both; }
 .captchaNoise { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 @keyframes charIn { from { opacity: 0; } to { opacity: 1; } }
+/* ---------- FULL SCREEN LAYOUT (no outer card) ---------- */
+.page { --w: 520px; min-height: 100vh; min-height: 100dvh; padding: 14px 18px 18px; }
+.topBar { padding: 0 0 14px; }
+.phone { flex: 1; display: flex; flex-direction: column; padding: 6px 0 0; overflow: visible; background: none; border: none; box-shadow: none; border-radius: 0; }
+.phone::before { display: none; }
+.checkingWrap, .resultWrap { margin: auto 0; }
+.infoNote { margin-bottom: 14px; }
+.rewardBanner { margin-top: auto; }
+.logoutLink { margin-top: 10px; }
+@media (min-width: 768px) { .page { padding: 24px; } .pageTitle { font-size: 32px; } }
