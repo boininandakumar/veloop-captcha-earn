@@ -120,9 +120,29 @@ export default function CaptchaEarn() {
   }
 
   const inChallenge = phase === "challenge" || phase === "scanning";
+  
+  // Makes a soft glow follow the finger or mouse.
+  function handlePointerMove(e) {
+    const el = e.currentTarget;
+    el.style.setProperty("--mx", `${e.clientX}px`);
+    el.style.setProperty("--my", `${e.clientY}px`);
+  }
 
   return (
-    <div className={styles.page}>
+        <div className={styles.page} onPointerMove={handlePointerMove} onPointerDown={handlePointerMove}>
+      <div className={styles.bgLayer} aria-hidden="true">
+        <span className={styles.orb1} />
+        <span className={styles.orb2} />
+        <span className={styles.orb3} />
+        <span className={styles.gridGlow} />
+        {Array.from({ length: 14 }).map((_, i) => (
+          <i
+            key={i}
+            className={styles.spark}
+            style={{ "--x": `${(i * 37 + 8) % 100}%`, "--s": `${3 + (i % 4) * 2}px`, "--d": `${9 + (i % 5) * 2.5}s`, "--delay": `${-i * 1.7}s` }}
+          />
+        ))}
+      </div>
       <div className={styles.topBar}>
         <button type="button" className={styles.backBtn} onClick={logout} aria-label="Sign out" title="Sign out">
           <BackIcon />
@@ -131,7 +151,7 @@ export default function CaptchaEarn() {
           <span>VELOOP</span>
           <small>REWARDS</small>
         </div>
-        <div className={styles.balancePill} aria-label="Gem balance">
+                <div key={balance} className={styles.balancePill} aria-label="Gem balance">
           <GemIcon size="1.1em" />
           {balance.toFixed(2)}
         </div>
